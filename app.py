@@ -2,13 +2,9 @@
 # working with sample data.
 # importing the module
 
-import os
 import datetime
-import traceback
-import tempfile
 import logging
 
-import cv2
 import numpy as np
 import pandas as pd
 from PIL import Image
