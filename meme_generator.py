@@ -11,12 +11,10 @@ import matplotlib.pyplot as plt
 
 import config
 from src import util
-from src import click_event_util
+# from src import click_event_util
 
-import plotly.express as px
 import matplotlib.pyplot as plt
 import streamlit as st
-from streamlit_drawable_canvas import st_canvas
 
 
 if "font_position_dict" not in st.session_state:
