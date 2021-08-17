@@ -1,12 +1,10 @@
 # To make things easier later, we're also importing numpy and pandas for
 # working with sample data.
 # importing the module
-import io
-import os
 import datetime
 import logging
 
-import cv2
+
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
