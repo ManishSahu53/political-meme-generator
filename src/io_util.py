@@ -20,6 +20,7 @@ def get_images(conn):
         path_image.append(row.image_path)
     return path_image
 
+# @st.cache(ttl=600, allow_output_mutation=True)
 def load_image(path_s3):
     if 's3://' in path_s3:
         path_s3 = path_s3.split('s3://')[1]

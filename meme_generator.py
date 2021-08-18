@@ -64,7 +64,7 @@ if __name__ == "__main__":
     n = len(path_image)
     print(f'Number of Image found: {n}')
 
-    img = []
+    img_list = []
     checkbox = []
     with col1.container():
         page = st.number_input('Page Number', min_value=0, max_value=n//config.MAX_IMAGE, step=1, value=0)
@@ -72,12 +72,12 @@ if __name__ == "__main__":
 
         for i in range(config.MAX_IMAGE):
             img = io_util.load_image(path_image[int((page * config.MAX_IMAGE + i)%n)])
-            img = img.resize((100, 100))
-            st.image(img, use_column_width=True)
-            # checkbox.append(col2.checkbox(''))
+            thumbnail_img = img.resize((100, 100))
+            st.image(thumbnail_img, use_column_width=True)
+            img_list.append(img)
 
     img_index = int((page * config.MAX_IMAGE + pick_img-1)%n)
-    img = io_util.load_image(path_image[img_index])
+    img = img_list[img_index] # io_util.load_image(path_image[img_index])
     shape = np.array(img).shape
 
     # col3.write('----------')
