@@ -5,7 +5,7 @@ import os
 import io
 import datetime
 import logging
-
+import copy
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -77,8 +77,8 @@ if __name__ == "__main__":
             img_list.append(img)
 
     img_index = pick_img-1 # int((page * config.MAX_IMAGE + pick_img-1)%n)
-    img = img_list[img_index] # io_util.load_image(path_image[img_index])
-    shape = np.array(img).shape
+    img_full = copy.deepcopy(img_list[img_index]) # io_util.load_image(path_image[img_index])
+    shape = np.array(img_full).shape
 
     # col3.write('----------')
     if 'col_slider' not in st.session_state:
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                 on_change=font_position_onchange)
 
     # Images Draw Tool
-    d1 = ImageDraw.Draw(img)
+    d1 = ImageDraw.Draw(img_full)
 
     # use a truetype font
     font_color = col5.color_picker('Font Color', '#FFFFFF')
@@ -149,7 +149,7 @@ if __name__ == "__main__":
             text4, fill=font_color, font=font, 
             stroke_width=1, stroke_fill=stroke_color)
 
-    col3.image(img, use_column_width=True)
+    col3.image(img_full, use_column_width=True)
 
 
 
