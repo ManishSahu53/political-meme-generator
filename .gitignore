@@ -2,6 +2,7 @@
 .streamlit
 .vscode
 uploaded_data
+data/
 
 # Files
 

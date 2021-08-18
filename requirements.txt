@@ -3,3 +3,5 @@ pandas
 matplotlib
 streamlit
 Pillow
+s3fs
+gsheetsdb

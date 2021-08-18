@@ -1,6 +1,8 @@
 # To make things easier later, we're also importing numpy and pandas for
 # working with sample data.
 # importing the module
+import os
+import io
 import datetime
 import logging
 
@@ -11,11 +13,17 @@ import matplotlib.pyplot as plt
 
 import config
 from src import util
+from src import db_util
+from src import io_util
 # from src import click_event_util
 
 import matplotlib.pyplot as plt
 import streamlit as st
+import s3fs
 
+# Create connection object.
+# `anon=False` means not anonymous, i.e. it uses access keys to pull data.
+fs = s3fs.S3FileSystem(anon=False)
 
 if "font_position_dict" not in st.session_state:
     st.session_state.font_position_dict = {
@@ -28,32 +36,21 @@ if "font_position_dict" not in st.session_state:
 def font_position_onchange():
     st.session_state.font_position_dict[font_position] = [st.session_state.col_slider, st.session_state.row_slider]
 
-LINE = """<style>
-    .vl {
-    border-left: 2px solid black;
-    height: 100px;
-    position: absolute;
-    left: 50%;
-    margin-left: -3px;
-    top: 0;
-    }
-    </style>
-    <div class="vl"></div>"""
-
 # Constants
-MAX_IMAGE = 5
 stroke_color = (0, 0, 0) 
 font_color = (255, 255, 255)
 
+# Connecting to Google Sheet
+conn = db_util.GoogleSheet()
+
 if __name__ == "__main__":
-    st.set_page_config(page_title='Political Meme Generator (IPMG)',
+    st.set_page_config(page_title=config.title,
                 page_icon=":chart_with_upwards_trend:",
                 layout='wide', initial_sidebar_state='collapsed')
 
 
-
-    st.title('Political Meme Generator (IPMG)', )
-    st.subheader('IPMG is best way to create Indian Political Memes. Just for Fun.', )
+    st.title(config.title)
+    st.subheader(config.sub_title)
 
     # Calculating Yesterday date
     current_date = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -63,37 +60,32 @@ if __name__ == "__main__":
     col1, col2, col3, col4, col5, col6 = st.columns([2, 2, 10, 5, 5, 1])
     query_params = st.experimental_get_query_params()
 
-    path_image = util.list_list('data', ('jpg', 'jpeg', 'png'))
-    print(f'Number of Image found: {len(path_image)}')
-
-    col6.write("**[Linkedin](https://www.linkedin.com/in/manishsahuiitbhu/)<br>\
-                        [:beer:](https://rzp.io/i/K8x2gQ3wG)**",
-                    unsafe_allow_html=True)
-
+    path_image = io_util.get_images(conn) # util.list_list('data', ('jpg', 'jpeg', 'png'))
     n = len(path_image)
+    print(f'Number of Image found: {n}')
 
     img = []
     checkbox = []
     with col1.container():
-        page = st.number_input('Page Number', min_value=0, max_value=n//MAX_IMAGE, step=1, value=0)
-        pick_img = col2.selectbox(f"Select Image", [i for i in range(1, MAX_IMAGE+1)])
+        page = st.number_input('Page Number', min_value=0, max_value=n//config.MAX_IMAGE, step=1, value=0)
+        pick_img = col2.selectbox(f"Select Image", [i for i in range(1, config.MAX_IMAGE+1)])
 
-        for i in range(MAX_IMAGE):
-            img = Image.open(path_image[int((page * MAX_IMAGE + i)%n)])
+        for i in range(config.MAX_IMAGE):
+            img = io_util.load_image(path_image[int((page * config.MAX_IMAGE + i)%n)])
             img = img.resize((100, 100))
             st.image(img, use_column_width=True)
             # checkbox.append(col2.checkbox(''))
 
-    img_index = int((page * MAX_IMAGE + pick_img-1)%n)
-    img = Image.open(path_image[img_index])
+    img_index = int((page * config.MAX_IMAGE + pick_img-1)%n)
+    img = io_util.load_image(path_image[img_index])
     shape = np.array(img).shape
 
     # col3.write('----------')
     if 'col_slider' not in st.session_state:
-        st.session_state['col_slider'] = 7
+        st.session_state['col_slider'] = 10
 
     if 'row_slider' not in st.session_state:
-        st.session_state['row_slider'] = 7
+        st.session_state['row_slider'] = 10
 
     if 'font_color' not in st.session_state:
         st.session_state['font_color'] = font_color
@@ -103,12 +95,12 @@ if __name__ == "__main__":
 
 
     col3.slider(label='Row Slide', min_value=0, 
-                max_value=shape[1], value=7, 
+                max_value=shape[1], value=st.session_state.row_slider, 
                 key='row_slider', 
                 on_change=font_position_onchange)
 
     col3.slider(label='Column Slide', min_value=0, 
-                max_value=shape[0], value=7, 
+                max_value=shape[0], value=st.session_state.col_slider, 
                 key='col_slider',
                 on_change=font_position_onchange)
 
@@ -129,7 +121,7 @@ if __name__ == "__main__":
 
     text1 = col4.text_input('Text 1')
     text2 = col4.text_input('Text 2')
-    print(text1)
+    
     col5.write('')
     col5.write('')
     col5.write('')
@@ -137,7 +129,7 @@ if __name__ == "__main__":
     text3 = col5.text_input('Text 3')
     text4 = col5.text_input('Text 4')
 
-    font = ImageFont.truetype("src/Mukta-Medium.ttf", st.session_state.font_slider)
+    font = ImageFont.truetype(config.font_type, st.session_state.font_slider)
 
     # print(st.session_state.font_position_dict)
 
@@ -161,9 +153,13 @@ if __name__ == "__main__":
 
 
 
-    st.write("**:beer: Buy me a [beer](https://rzp.io/i/K8x2gQ3wG)**")
+    col6.write(f"**[Linkedin]({config.linkedin_url})<br>\
+                [:beer:]({config.support_url})**",
+                unsafe_allow_html=True)
+
+    st.write(f"**:beer: [Support Me] ({config.support_url})**")
     expander = st.expander("This app is developed by Manish Sahu.")
     expander.write(
-        "Contact me on [Linkedin](https://www.linkedin.com/in/manishsahuiitbhu/)")
+        f"Contact me on [Linkedin]({config.linkedin_url})")
     expander.write(
-        "The source code is on [GitHub](https://github.com/ManishSahu53/political-meme-generator)")
+        f"The source code is on [GitHub]({config.github_url})")
