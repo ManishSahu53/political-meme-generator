@@ -76,7 +76,7 @@ if __name__ == "__main__":
             st.image(thumbnail_img, use_column_width=True)
             img_list.append(img)
 
-    img_index = int((page * config.MAX_IMAGE + pick_img-1)%n)
+    img_index = pick_img-1 # int((page * config.MAX_IMAGE + pick_img-1)%n)
     img = img_list[img_index] # io_util.load_image(path_image[img_index])
     shape = np.array(img).shape
 

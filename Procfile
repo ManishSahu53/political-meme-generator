@@ -1,0 +1,1 @@
+web: sh setup.sh && streamlit run meme_generator.py --theme.base='light'

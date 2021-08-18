@@ -2,7 +2,7 @@ import io
 import s3fs
 from PIL import Image
 import streamlit as st
-
+import time
 from src import db_util
 
 
@@ -22,6 +22,7 @@ def get_images(conn):
 
 # @st.cache(ttl=600, allow_output_mutation=True)
 def load_image(path_s3):
+    st_time = time.time()
     if 's3://' in path_s3:
         path_s3 = path_s3.split('s3://')[1]
     
@@ -29,4 +30,6 @@ def load_image(path_s3):
         img = f.read()
     image_stream = io.BytesIO(img)
     img = Image.open(image_stream)
+    end_time = time.time()
+    print(f'Time Taken: {end_time - st_time}')
     return img
