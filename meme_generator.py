@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
     text1 = col4.text_input('Text 1')
     text2 = col4.text_input('Text 2')
-
+    print(text1)
     col5.write('')
     col5.write('')
     col5.write('')
@@ -137,9 +137,9 @@ if __name__ == "__main__":
     text3 = col5.text_input('Text 3')
     text4 = col5.text_input('Text 4')
 
-    font = ImageFont.truetype("src/PatuaOne-Regular.ttf", st.session_state.font_slider)
+    font = ImageFont.truetype("src/Mukta-Medium.ttf", st.session_state.font_slider)
 
-    print(st.session_state.font_position_dict)
+    # print(st.session_state.font_position_dict)
 
     d1.text((st.session_state.font_position_dict['Text 1'][0], st.session_state.font_position_dict['Text 1'][1]),
             text1, fill=font_color, font=font, 
