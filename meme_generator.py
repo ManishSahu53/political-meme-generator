@@ -15,11 +15,14 @@ import config
 from src import util
 from src import db_util
 from src import io_util
+from src.support_button import razor_button
+
 # from src import click_event_util
 
-import matplotlib.pyplot as plt
-import streamlit as st
 import s3fs
+import streamlit as st
+import matplotlib.pyplot as plt
+import streamlit.components.v1 as components  # Import Streamlit
 
 # Create connection object.
 # `anon=False` means not anonymous, i.e. it uses access keys to pull data.
@@ -152,14 +155,17 @@ if __name__ == "__main__":
     col3.image(img_full, use_column_width=True)
 
 
-
-    col6.write(f"**[Linkedin]({config.linkedin_url})<br>\
-                [:beer:]({config.support_url})**",
+    col6.write(f"**:beer: [Support]({config.support_url})**",
                 unsafe_allow_html=True)
 
-    st.write(f"**:beer: [Support Me] ({config.support_url})**")
+    # st.write(f"**:beer: [Support Me] ({config.support_url})**")
+    st.write('')
+    st.write('')
+    components.html(razor_button.html_string)
+    # Render the h1 block, contained in a frame of size 200x200.
     expander = st.expander("This app is developed by Manish Sahu.")
     expander.write(
         f"Contact me on [Linkedin]({config.linkedin_url})")
     expander.write(
         f"The source code is on [GitHub]({config.github_url})")
+    
