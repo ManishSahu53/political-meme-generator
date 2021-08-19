@@ -3,7 +3,7 @@ import s3fs
 from PIL import Image
 import streamlit as st
 import time
-from src import db_util
+import config
 
 
 # Create connection object.
@@ -20,7 +20,7 @@ def get_images(conn):
         path_image.append(row.image_path)
     return path_image
 
-@st.cache(ttl=600)
+@st.cache(ttl=config.ttl_cache)
 def load_image(path_s3):
     # st_time = time.time()
     if 's3://' in path_s3:

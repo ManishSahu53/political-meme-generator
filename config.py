@@ -8,3 +8,5 @@ linkedin_url = 'https://www.linkedin.com/in/manishsahuiitbhu/'
 support_url = 'https://rzp.io/i/K8x2gQ3wG'
 font_type = 'src/Mukta-Medium.ttf'
 github_url = 'https://github.com/ManishSahu53/political-meme-generator'
+
+ttl_cache = 36000
