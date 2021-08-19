@@ -1,7 +1,6 @@
 import streamlit as st
 from gsheetsdb import connect
-from streamlit import config
-
+import config
 
 class GoogleSheet:
     def __init__(self):    
