@@ -97,12 +97,12 @@ if __name__ == "__main__":
         st.session_state['stroke_color'] = stroke_color
 
 
-    col3.slider(label='Row Slide', min_value=0, 
+    col3.slider(label='Left Right Text Adjust', min_value=0, 
                 max_value=shape[1], value=st.session_state.row_slider, 
                 key='row_slider', 
                 on_change=font_position_onchange)
 
-    col3.slider(label='Column Slide', min_value=0, 
+    col3.slider(label='Up Down Text Adjust', min_value=0, 
                 max_value=shape[0], value=st.session_state.col_slider, 
                 key='col_slider',
                 on_change=font_position_onchange)
