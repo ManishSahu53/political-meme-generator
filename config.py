@@ -9,4 +9,4 @@ support_url = 'https://rzp.io/l/X6c3T9Q'
 font_type = 'src/Mukta-Medium.ttf'
 github_url = 'https://github.com/ManishSahu53/political-meme-generator'
 
-ttl_cache = 36000
+ttl_cache = 2 * 86400
