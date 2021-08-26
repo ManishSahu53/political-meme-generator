@@ -115,7 +115,7 @@ if __name__ == "__main__":
     stroke_color = col5.color_picker('Outline Color', '#000000')
 
     texts = ['Text 1', 'Text 2', 'Text 3', 'Text 4']
-    font_position = col4.selectbox("Adjust Font Position", texts)
+    font_position = col4.selectbox("Which Text Adjust Position", texts)
 
     # Font size slider
     col4.slider(label='Font Size', min_value=0, 
