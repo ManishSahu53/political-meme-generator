@@ -2,7 +2,8 @@
 # working with sample data.
 # importing the module
 import os
-import io
+import threading
+import time
 import datetime
 import logging
 import copy
@@ -21,6 +22,7 @@ from src.support_button import razor_button
 
 import s3fs
 import streamlit as st
+from streamlit.report_thread import add_report_ctx
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components  # Import Streamlit
 
@@ -67,17 +69,27 @@ if __name__ == "__main__":
     n = len(path_image)
     print(f'Number of Image found: {n}')
 
-    img_list = []
+    img_list = {}
+    threads = []
     checkbox = []
     with col1.container():
         page = st.number_input('Page Number', min_value=0, max_value=n//config.MAX_IMAGE, step=1, value=0)
         pick_img = col2.selectbox(f"Select Image", [i for i in range(1, config.MAX_IMAGE+1)])
 
         for i in range(config.MAX_IMAGE):
-            img = io_util.load_image(path_image[int((page * config.MAX_IMAGE + i)%n)])
+            temp_index = int((page * config.MAX_IMAGE + i)%n)
+            t = threading.Thread(target=io_util.load_image_async, args=(path_image[temp_index], i, img_list))
+            add_report_ctx(t)
+            threads.append(t)
+            t.start()
+
+        print('Joining Threads...')
+        for i, tt in enumerate(threads):
+            tt.join()
+            # img = io_util.load_image(path_image[temp_index])
+            img = img_list[i]
             thumbnail_img = img.resize((100, 100))
             st.image(thumbnail_img, use_column_width=True)
-            img_list.append(img)
 
     img_index = pick_img-1 # int((page * config.MAX_IMAGE + pick_img-1)%n)
     img_full = copy.deepcopy(img_list[img_index]) # io_util.load_image(path_image[img_index])

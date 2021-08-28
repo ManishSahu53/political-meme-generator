@@ -1,4 +1,5 @@
 import io
+from os import pathconf_names
 import s3fs
 from PIL import Image
 import streamlit as st
@@ -33,3 +34,7 @@ def load_image(path_s3):
     # end_time = time.time()
     # print(f'Time Taken: {end_time - st_time}')
     return img
+
+def load_image_async(path_s3, index, data):
+    data[index] = load_image(path_s3=path_s3)
+    return data
