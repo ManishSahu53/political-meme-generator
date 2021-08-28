@@ -1,4 +1,5 @@
 import io
+import os
 from os import pathconf_names
 import s3fs
 from PIL import Image
@@ -12,7 +13,11 @@ import config
 fs = s3fs.S3FileSystem(anon=False)
 
 def get_images(conn):
-    sheet_url = st.secrets["public_gsheets_url"]
+    try:
+        sheet_url = os.environ.get('public_gsheets_url')
+    except:
+        sheet_url = st.secrets["public_gsheets_url"]
+    
     rows = conn.run_query(f'SELECT * FROM "{sheet_url}"')
 
     path_image = []
